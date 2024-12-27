@@ -3,24 +3,22 @@ package nl.kwsmit.unogk;
 import java.io.IOException;
 import java.util.ArrayList;
 
-class ConfigUnoGK {
-    int port = 6666;
-    int nrOfPlayers = 2;
-}
-
 /**
  * This class contains all the logic of the game.
  */
 public class UnoGKServer {
     public static void main(String[] args) {
-        ConfigUnoGK config = new ConfigUnoGK();
+        ConfigUnoServer config = new ConfigUnoServer();
         GameState gameState = new GameState();
         Server server = new Server();
         ArrayList<Client> clients = new ArrayList<>();
 
-        // Start server.
+        // read configuration from file
+        config.readConfigFile();
+
+        // start server
         try {
-            server.start(config.port);
+            server.start(config.getPort());
             System.out.println("UnoGK Server starting...");
         } catch (IOException e) {
             System.out.println("Error on starting server:");
@@ -28,19 +26,19 @@ public class UnoGKServer {
             System.exit(0);
         }
 
-        // Set number of players.
-        gameState.setNrOfPlayers(config.nrOfPlayers);
+        // set number of players
+        gameState.setNrOfPlayers(config.getNrOfPlayers());
 
-        // Connect players.
+        // connect players
         try {
-            for (int i = 0; i < config.nrOfPlayers; i++) {
+            for (int i = 0; i < config.getNrOfPlayers(); i++) {
                 clients.add(server.connectClient());
             }
         } catch (IOException e) {
             System.out.println("Error on connecting clients:");
             System.out.println(e.getMessage());
         }
-        if (clients.size() < config.nrOfPlayers) {
+        if (clients.size() < config.getNrOfPlayers()) {
             System.out.println("Not enough players are connected, closing program.");
             try {
                 server.close();

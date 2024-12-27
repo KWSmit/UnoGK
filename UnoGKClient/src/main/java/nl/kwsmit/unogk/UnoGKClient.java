@@ -7,11 +7,6 @@ import java.io.InputStreamReader;
 import java.io.IOException;
 import java.util.Scanner;
 
-class UnoGKClientConfig {
-    String serverIP = "127.0.0.1";
-    int port = 6666;
-}
-
 /**
  * Client application.
  */
@@ -44,16 +39,21 @@ public class UnoGKClient {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        UnoGKClientConfig config = new UnoGKClientConfig();
+        ConfigUnoClient config = new ConfigUnoClient();
         UnoGKClient client = new UnoGKClient();
         String username;
         String response;
         boolean stayConnected = true;
+        // read config from file
+        config.readConfigFile();
+
+        // get username
         System.out.println("Enter your name:");
         username = scanner.nextLine();
         scanner.close();
+
         try {
-            client.startConnection(config.serverIP, config.port);
+            client.startConnection(config.getIpServer(), config.getPort());
             while (stayConnected) {
                 response = client.readMessage();
                 switch (response) {
@@ -74,8 +74,8 @@ public class UnoGKClient {
                 System.out.println("..");
             }
             client.stopConnection();
-        } catch (Exception IOEXception) {
-            System.err.println("IOException");
+        } catch (IOException e) {
+            System.err.println("IOException: " + e.getMessage());
         }
     }
 }
