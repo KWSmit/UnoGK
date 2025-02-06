@@ -1,7 +1,6 @@
 package nl.kwsmit.unogk;
 
 import java.net.*;
-import java.util.ArrayList;
 import java.io.*;
 
 /**
@@ -32,18 +31,8 @@ public class Server {
         Client client = new Client();
         client.out = new PrintWriter(clientSocket.getOutputStream(), true);
         client.in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-        client.id = requestString(client, "id");
+        client.name = requestString(client, "name");
         return client;
-    }
-
-    /**
-     * Sends message to all clients to disconnect and closes server.
-     */
-    public void close() throws IOException {
-        for (Client client : clients) {
-            client.out.println("bye");
-        }
-        serverSocket.close();
     }
 
     /**
@@ -57,52 +46,5 @@ public class Server {
     public String requestString(Client client, String request) throws IOException {
         client.out.println(request);
         return client.in.readLine();
-    }
-
-    /**
-     * Start the game.
-     * 
-     * @param args
-     * @throws InterruptedException
-     */
-    public static void main(String[] args) throws InterruptedException {
-        Server server = new Server();
-        String response;
-        int nrOfGames = 2;
-        try {
-            server.start(6666);
-            for (int i = 0; i < nrOfGames; i++) {
-                System.out.println("\n=== Game " + (i + 1) + " ===");
-                System.out.println("Waiting for clients to connect...");
-                server.connectClients();
-                System.out.println(server.clients.size() + " connected:");
-                for (Client client : server.clients) {
-                    System.out.println(client.id);
-                }
-                Thread.sleep(2000);
-                System.out.println("Requesting action from clients");
-                for (Client client : server.clients) {
-                    try {
-                        response = server.requestString(client, "action");
-                        System.out.println(response);
-                    } catch (IOException e) {
-                        System.out.println("Error requesting action to client: " + client.id);
-                    }
-                }
-                Thread.sleep(2000);
-                System.out.println("Sending bye to clients");
-                for (Client client : server.clients) {
-                    try {
-                        response = server.requestString(client, "bye");
-                        System.out.println(response);
-                    } catch (IOException e) {
-                        System.out.println("Error requesting bye to client: " + client.id);
-                    }
-                }
-            }
-            server.close();
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
     }
 }

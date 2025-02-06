@@ -18,6 +18,7 @@ enum Direction {
 public class GameState {
 
     private int nrOfPlayers;
+    private int nrOfConnectedPlayers;
     private int indexActivePlayer;
     private String nameActivePlayer;
     private Direction direction;
@@ -26,6 +27,7 @@ public class GameState {
 
     GameState() {
         nrOfPlayers = 0;
+        nrOfConnectedPlayers = 0;
         indexActivePlayer = 0;
         nameActivePlayer = "";
         direction = Direction.COUNTERCLOCKWISE;
@@ -39,6 +41,14 @@ public class GameState {
 
     public void setNrOfPlayers(int nrOfPlayers) {
         this.nrOfPlayers = nrOfPlayers;
+    }
+
+    public int getNrOfConnectedPlayers() {
+        return nrOfConnectedPlayers;
+    }
+
+    public void setNrOfConnectedPlayers(int nrOfPlayers) {
+        this.nrOfConnectedPlayers = nrOfPlayers;
     }
 
     public int getIndexActivePlayer() {
